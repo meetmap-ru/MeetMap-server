@@ -10,20 +10,20 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import ru.devgroup.adventuremap.core.util.State
+import ru.devgroup.adventuremap.data.repository.UserRepositoryImpl
 import ru.devgroup.adventuremap.domain.model.user.User
-import ru.devgroup.adventuremap.domain.usecase.user.GetUserByUsernameUseCase
+import ru.devgroup.adventuremap.domain.repository.UserRepository
 import java.io.IOException
-import javax.swing.Action
 
 @Component
 class AuthTokenFilter : OncePerRequestFilter() {
     @Autowired
-    private lateinit var getUserByUsernameUseCase: GetUserByUsernameUseCase
+    private lateinit var userRepository: UserRepository
+
 
     @Autowired
     private lateinit var jwtHelper: JwtHelper
@@ -38,9 +38,9 @@ class AuthTokenFilter : OncePerRequestFilter() {
             val token = parseJwt(request)
             if (jwtHelper.isTokenValid(token)) {
                 val username: String = jwtHelper.getClaims(token)?.subject ?: throw Exception("subject is null")
-                when(val state = getUserByUsernameUseCase(username)) {
+                when(val state = userRepository.getByUsername(username)) {
                     is State.Success -> {
-                        val user = state.data as User
+                        val user = state.data
                         val authentication = UsernamePasswordAuthenticationToken(
                             user, null, user.authorities
                         )
