@@ -14,8 +14,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import ru.devgroup.adventuremap.core.util.State
-import ru.devgroup.adventuremap.data.repository.UserRepositoryImpl
-import ru.devgroup.adventuremap.domain.model.user.User
 import ru.devgroup.adventuremap.domain.repository.UserRepository
 import java.io.IOException
 
