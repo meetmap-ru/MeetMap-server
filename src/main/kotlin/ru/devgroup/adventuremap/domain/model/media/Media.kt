@@ -1,14 +1,15 @@
-package ru.devgroup.adventuremap.enterprise.model.media
+package ru.devgroup.adventuremap.domain.model.media
 
 import ru.devgroup.adventuremap.data.model.DatabaseEntity
-import ru.devgroup.adventuremap.enterprise.model.Domain
+import ru.devgroup.adventuremap.domain.model.Domain
 
 data class Media(
-    val id: Long,
     val name: String,
     val link: String,
     val type: String
-): Domain {
+) : Domain {
+    val id: Long = 0
+
     override fun asDatabaseEntity(): DatabaseEntity {
         TODO("Not yet implemented")
     }

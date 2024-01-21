@@ -1,14 +1,14 @@
-package ru.devgroup.adventuremap.enterprise.model.city
+package ru.devgroup.adventuremap.domain.model.city
 
 import ru.devgroup.adventuremap.data.model.DatabaseEntity
-import ru.devgroup.adventuremap.enterprise.model.Domain
+import ru.devgroup.adventuremap.domain.model.Domain
 
 data class City(
     val id: Long,
     val name: String,
     val district: String,
     val country: String
-): Domain {
+) : Domain {
     override fun asDatabaseEntity(): DatabaseEntity {
         TODO("Not yet implemented")
     }

@@ -1,13 +1,12 @@
-package ru.devgroup.adventuremap.enterprise.model.event
+package ru.devgroup.adventuremap.domain.model.event
 
 import ru.devgroup.adventuremap.data.model.DatabaseEntity
-import ru.devgroup.adventuremap.enterprise.model.Domain
-import ru.devgroup.adventuremap.enterprise.model.chat.Chat
-import ru.devgroup.adventuremap.enterprise.model.media.Media
-import ru.devgroup.adventuremap.enterprise.model.user.User
+import ru.devgroup.adventuremap.domain.model.Domain
+import ru.devgroup.adventuremap.domain.model.chat.Chat
+import ru.devgroup.adventuremap.domain.model.media.Media
+import ru.devgroup.adventuremap.domain.model.user.User
 
 data class Event(
-    val id: Long,
     val title: String,
     val media: List<Media>,
     val description: String,
@@ -22,7 +21,9 @@ data class Event(
     val chat: Chat, // можно поменять на chatId, пока хз
     val maxPersons: Int,
     val price: Int
-): Domain {
+) : Domain {
+    val id: Long = 0
+
     override fun asDatabaseEntity(): DatabaseEntity {
         TODO("Not yet implemented")
     }

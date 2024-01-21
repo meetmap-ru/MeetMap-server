@@ -1,4 +1,4 @@
-package ru.devgroup.adventuremap.enterprise.model
+package ru.devgroup.adventuremap.domain.model
 
 import ru.devgroup.adventuremap.data.model.DatabaseEntity
 

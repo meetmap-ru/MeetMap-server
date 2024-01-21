@@ -1,7 +1,8 @@
-package ru.devgroup.adventuremap.presentation.application
+package ru.devgroup.adventuremap
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+
 
 @SpringBootApplication
 class AdventureMapApplication
