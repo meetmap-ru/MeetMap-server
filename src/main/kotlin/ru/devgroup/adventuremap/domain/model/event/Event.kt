@@ -1,8 +1,7 @@
 package ru.devgroup.adventuremap.domain.model.event
 
-import ru.devgroup.adventuremap.data.model.DatabaseEntity
 import ru.devgroup.adventuremap.domain.model.Domain
-import ru.devgroup.adventuremap.domain.model.chat.Chat
+import ru.devgroup.adventuremap.domain.model.Permission
 import ru.devgroup.adventuremap.domain.model.media.Media
 import ru.devgroup.adventuremap.domain.model.user.User
 
@@ -15,16 +14,15 @@ data class Event(
     val ageLimit: Int,
     val date: Pair<Long, Long>,
     val cityId: Long,
-    val location: String,
+    val address: String,
     val organizers: List<User>,
     val timestamp: Long,
-    val chat: Chat, // можно поменять на chatId, пока хз
+    val chat: Long,
     val maxPersons: Int,
-    val price: Int
+    val price: Float,
+    val mediaVisibility: Permission = Permission.AllUsers,
+    val chatVisibility: Permission = Permission.OnlyMembers,
+    val membersVisibility: Permission = Permission.OnlyMembers,
 ) : Domain {
     val id: Long = 0
-
-    override fun asDatabaseEntity(): DatabaseEntity {
-        TODO("Not yet implemented")
-    }
 }
