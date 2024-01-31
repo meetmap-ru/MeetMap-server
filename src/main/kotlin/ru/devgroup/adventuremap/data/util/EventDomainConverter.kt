@@ -59,9 +59,4 @@ class EventDomainConverter : DomainConverter<EventEntity, Event> {
             chatVisibility,
             membersVisibility,
         )
-
-    fun doConvert(e: Event): EventEntity {
-        println("sdcsdc")
-        return e.asDatabaseEntity()
-    }
 }

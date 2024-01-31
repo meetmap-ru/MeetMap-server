@@ -25,4 +25,44 @@ data class Event(
     val membersVisibility: Permission = Permission.OnlyMembers,
 ) : Domain {
     val id: Long = 0
+
+    companion object {
+        fun new(
+            title: String,
+            media: List<Media> = listOf(),
+            description: String = "",
+            members: List<User> = listOf(),
+            category: List<Category> = listOf(),
+            ageLimit: Int,
+            date: Pair<Long, Long>,
+            cityId: Long,
+            address: String,
+            organizers: List<User>,
+            timestamp: Long,
+            chat: Long,
+            maxPersons: Int,
+            price: Float,
+            mediaVisibility: Permission = Permission.AllUsers,
+            chatVisibility: Permission = Permission.OnlyMembers,
+            membersVisibility: Permission = Permission.OnlyMembers,
+        ) = Event(
+            title,
+            media,
+            description,
+            members,
+            category,
+            ageLimit,
+            date,
+            cityId,
+            address,
+            organizers,
+            timestamp,
+            chat,
+            maxPersons,
+            price,
+            mediaVisibility,
+            chatVisibility,
+            membersVisibility,
+        )
+    }
 }

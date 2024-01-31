@@ -14,15 +14,15 @@ import ru.devgroup.adventuremap.domain.request.user.ResetPasswordRequest
 import ru.devgroup.adventuremap.domain.request.user.SignInRequest
 import ru.devgroup.adventuremap.domain.request.user.SignUpRequest
 import ru.devgroup.adventuremap.domain.response.Response.DataResponse
+import ru.devgroup.adventuremap.domain.util.PaginationController
 import ru.devgroup.adventuremap.domain.util.TokenHelper
-import kotlin.math.min
 
 @RestController
 @RequestMapping(USER_API)
 class UserController(
     private val userRepository: UserRepository,
-    private val tokenHelper: TokenHelper
-) {
+    private val tokenHelper: TokenHelper,
+) : PaginationController {
     @ExceptionHandler(Exception::class, BaseException::class)
     fun exceptionHandler(e: Exception): ResponseEntity<Any> {
         return when (e) {
@@ -38,13 +38,13 @@ class UserController(
     @PostMapping("/post/sign-up")
     fun signUp(
         @RequestBody registerRequest: SignUpRequest,
-        result: BindingResult
+        result: BindingResult,
     ): ResponseEntity<Any> = userRepository.signUp(registerRequest.asDomain(), registerRequest.password).asResponse()
 
     @GetMapping("/get/sign-in")
     fun signIn(
         @RequestBody signInRequest: SignInRequest,
-        result: BindingResult
+        result: BindingResult,
     ): ResponseEntity<Any> =
         when (val state = userRepository.signIn(signInRequest.username, signInRequest.password)) {
             is State.Success -> {
@@ -57,7 +57,7 @@ class UserController(
     @GetMapping("/get/info")
     fun getUserInfo(
         @RequestHeader header: HttpHeaders,
-        @RequestParam id: Long
+        @RequestParam id: Long,
     ): ResponseEntity<Any> {
         val token = header["Authorization"]?.first()
         val userId = (tokenHelper.getClaims(token)?.get("id") as Int).toLong()
@@ -67,7 +67,7 @@ class UserController(
     @PostMapping("post/reset-password")
     fun resetPassword(
         @RequestHeader header: HttpHeaders,
-        @RequestBody resetRequest: ResetPasswordRequest
+        @RequestBody resetRequest: ResetPasswordRequest,
     ): ResponseEntity<Any> {
         val token = header["Authorization"]?.first()
         val userId = (tokenHelper.getClaims(token)?.get("id") as Int).toLong()
@@ -78,7 +78,7 @@ class UserController(
     fun getByCity(
         @RequestParam id: Long,
         @RequestParam limit: Int = 65,
-        @RequestParam offset: Int = 0
+        @RequestParam offset: Int = 0,
     ): ResponseEntity<Any> {
         return userRepository.getByCity(id).page(limit, offset).asResponse()
     }
@@ -87,22 +87,8 @@ class UserController(
     fun getByName(
         @RequestParam name: String,
         @RequestParam limit: Int = 65,
-        @RequestParam offset: Int = 0
+        @RequestParam offset: Int = 0,
     ): ResponseEntity<Any> {
         return userRepository.getByName(name).page(limit, offset).asResponse()
     }
-
-    fun <T> State<List<T>>.page(limit: Int, offset: Int): State<List<T>> {
-        var data = this.data?: emptyList()
-        if (data.size > offset) {
-            data = data.subList(offset, min(limit + offset, data.lastIndex))
-            return when(this) {
-                is State.Success -> State.Success(data, this.message, this.status)
-                is State.Error -> State.Error(data, this.message, this.status)
-                else -> return this
-            }
-        }
-        return this
-    }
 }
-
