@@ -25,8 +25,8 @@ class MediaRepositoryImpl(
     }
 
     override fun create(media: Media): State<Media> {
-        val media = mediaDao.save(media.asDatabaseEntity())
-        return State.Success(media.asDomain())
+        val entity = mediaDao.save(media.asDatabaseEntity())
+        return State.Success(entity.asDomain())
     }
 
     override fun getByIds(vararg ids: Long): State<List<Media>> {

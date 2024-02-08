@@ -6,7 +6,8 @@ import ru.devgroup.adventuremap.data.dao.EventDao
 import ru.devgroup.adventuremap.data.entity.EventEntity
 import ru.devgroup.adventuremap.data.util.EventDomainConverter
 import ru.devgroup.adventuremap.domain.exceptions.NotFoundException
-import ru.devgroup.adventuremap.domain.model.event.Category
+import ru.devgroup.adventuremap.domain.exceptions.PermissionDenied
+import ru.devgroup.adventuremap.domain.model.Permission
 import ru.devgroup.adventuremap.domain.model.event.Event
 import ru.devgroup.adventuremap.domain.repository.EventRepository
 import kotlin.jvm.optionals.getOrElse
@@ -32,10 +33,17 @@ class EventRepositoryImpl(
 
     override fun getEventByWordFiltered(
         word: String,
-        category: List<Category>,
+        category: List<Long>,
+        cityId: Long?,
     ): State<List<Event>> {
         val entity: List<EventEntity> = eventDao.findByKeyWord(word)
-        return State.Success(entity.filter { (it.category intersect category).isNotEmpty() }.map { it.asDomain() })
+        return State.Success(
+            entity
+                .filter {
+                    (it.category intersect category).isNotEmpty() && it.cityId == (cityId ?: it.cityId)
+                }
+                .map { it.asDomain() },
+        )
     }
 
     override fun createEvent(event: Event): State<Event> {
@@ -47,7 +55,11 @@ class EventRepositoryImpl(
         eventId: Long,
         authorId: Long,
     ): State<Unit> {
-        val entity = eventDao.findById(eventId).getOrElse { throw NotFoundException() }
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(authorId, Permission.OnlyOwner) }
+                ?: throw PermissionDenied()
         eventDao.delete(entity)
         return State.Success(Unit)
     }
@@ -55,8 +67,14 @@ class EventRepositoryImpl(
     override fun addEventMember(
         eventId: Long,
         memberId: Long,
+        organizerId: Long,
     ): State<Unit> {
-        val entity = eventDao.findById(eventId).getOrElse { throw NotFoundException() }
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(organizerId, event.memberChangePermission) }
+                ?: throw PermissionDenied()
+
         eventDao.save(entity.copy(members = entity.members + memberId))
         return State.Success(Unit)
     }
@@ -64,9 +82,80 @@ class EventRepositoryImpl(
     override fun deleteEventMember(
         eventId: Long,
         memberId: Long,
+        organizerId: Long,
     ): State<Unit> {
-        val entity = eventDao.findById(eventId).getOrElse { throw NotFoundException() }
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(organizerId, event.memberChangePermission) }
+                ?: throw PermissionDenied()
         eventDao.save(entity.copy(members = entity.members - memberId))
         return State.Success(Unit)
+    }
+
+    override fun addMedia(
+        eventId: Long,
+        mediaId: Long,
+        organizerId: Long,
+    ): State<Unit> {
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(organizerId, event.mediaChangePermission) }
+                ?: throw PermissionDenied()
+        eventDao.save(entity.copy(media = entity.media + mediaId))
+        return State.Success(Unit)
+    }
+
+    override fun deleteMedia(
+        eventId: Long,
+        mediaId: Long,
+        organizerId: Long,
+    ): State<Unit> {
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(organizerId, event.mediaChangePermission) }
+                ?: throw PermissionDenied()
+        eventDao.save(entity.copy(media = entity.media - mediaId))
+        return State.Success(Unit)
+    }
+
+    override fun addOrganizer(
+        eventId: Long,
+        organizerId: Long,
+        ownerId: Long,
+    ): State<Unit> {
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(organizerId, Permission.OnlyOwner) }
+                ?: throw PermissionDenied()
+        eventDao.save(entity.copy(organizers = entity.organizers + organizerId))
+        return State.Success(Unit)
+    }
+
+    override fun deleteOrganizer(
+        eventId: Long,
+        organizerId: Long,
+        ownerId: Long,
+    ): State<Unit> {
+        val entity =
+            eventDao.findById(eventId)
+                .getOrElse { throw NotFoundException() }
+                .takeIf { event -> event.isActionPermitted(organizerId, Permission.OnlyOwner) }
+                ?: throw PermissionDenied()
+
+        eventDao.save(entity.copy(organizers = entity.organizers - organizerId))
+        return State.Success(Unit)
+    }
+
+    private fun EventEntity.isActionPermitted(
+        userId: Long,
+        action: Permission,
+    ): Boolean {
+        if (userId == owner) return true
+        if (userId in organizers && action == Permission.OnlyOrganizers) return true
+        return false
     }
 }

@@ -4,4 +4,5 @@ enum class Permission {
     AllUsers,
     OnlyMembers,
     OnlyOrganizers,
+    OnlyOwner,
 }
