@@ -24,7 +24,6 @@ data class EventEntity(
     val owner: Long,
     val organizers: List<Long>,
     val timestamp: Long,
-    val chat: Long,
     val maxPersons: Int,
     val price: Float,
     val mediaVisibility: Permission = Permission.AllUsers,

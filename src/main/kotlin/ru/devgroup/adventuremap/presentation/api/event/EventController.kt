@@ -55,7 +55,6 @@ class EventController(
         @RequestBody eventParams: CreateEventRequest,
         @RequestHeader header: HttpHeaders,
     ): ResponseEntity<Any> {
-        // TODO("support chat dao")
         val token = header["Authorization"]?.first()
         val userId = (tokenHelper.getClaims(token)?.get("id") as Int).toLong()
         val event: Event =
@@ -71,7 +70,6 @@ class EventController(
                 owner = userId,
                 organizers = listOf(userId),
                 timestamp = System.currentTimeMillis(),
-                chat = 0,
                 maxPersons = eventParams.maxPersons,
                 price = eventParams.price,
                 mediaVisibility = eventParams.mediaVisibility,

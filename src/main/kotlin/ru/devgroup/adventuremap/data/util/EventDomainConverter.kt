@@ -1,5 +1,6 @@
 package ru.devgroup.adventuremap.data.util
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import ru.devgroup.adventuremap.data.entity.EventEntity
 import ru.devgroup.adventuremap.domain.model.event.Event
@@ -14,8 +15,13 @@ import ru.devgroup.adventuremap.domain.util.DomainConverter
 
 @Component
 class EventDomainConverter : DomainConverter<EventEntity, Event> {
+    @Autowired
     private lateinit var getUserByIdUseCase: GetUserByIdUseCase
+
+    @Autowired
     private lateinit var getMediaByIdUseCase: GetMediaByIdUseCase
+
+    @Autowired
     private lateinit var getCategoryByIdUseCase: GetCategoryByIdUseCase
 
     override fun Event.asDatabaseEntity(): EventEntity =
@@ -33,7 +39,6 @@ class EventDomainConverter : DomainConverter<EventEntity, Event> {
             owner,
             organizers,
             timestamp,
-            chat,
             maxPersons,
             price,
             mediaVisibility,
@@ -58,7 +63,6 @@ class EventDomainConverter : DomainConverter<EventEntity, Event> {
             owner,
             organizers,
             timestamp,
-            chat,
             maxPersons,
             price,
             mediaVisibility,

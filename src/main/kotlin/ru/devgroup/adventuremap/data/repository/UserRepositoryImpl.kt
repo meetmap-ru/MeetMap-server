@@ -1,7 +1,7 @@
 package ru.devgroup.adventuremap.data.repository
 
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import ru.devgroup.adventuremap.core.util.State
 import ru.devgroup.adventuremap.data.dao.UserDao
 import ru.devgroup.adventuremap.data.util.UserDomainConverter
@@ -9,10 +9,9 @@ import ru.devgroup.adventuremap.domain.exceptions.InvalidCredentials
 import ru.devgroup.adventuremap.domain.exceptions.NotFoundException
 import ru.devgroup.adventuremap.domain.model.user.User
 import ru.devgroup.adventuremap.domain.repository.UserRepository
-import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-@Component
+@Repository
 class UserRepositoryImpl(
     private val userDao: UserDao,
     private val passwordEncoder: PasswordEncoder,
@@ -25,7 +24,7 @@ class UserRepositoryImpl(
             userDao.save(
                 user.asDatabaseEntity().copy(
                     password = passwordEncoder.encode(password),
-                    registrationTimestamp = Date().time,
+                    registrationTimestamp = System.currentTimeMillis(),
                 ),
             ).asDomain(),
         )
@@ -123,7 +122,7 @@ class UserRepositoryImpl(
 
     override fun setLastSeen(id: Long): State<Unit> {
         val user = userDao.findById(id).getOrNull() ?: throw NotFoundException()
-        userDao.save(user.copy(lastSeen = Date().time))
+        userDao.save(user.copy(lastSeen = System.currentTimeMillis()))
         return State.Completed("last seen updated", 200)
     }
 
