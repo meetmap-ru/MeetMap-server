@@ -27,4 +27,8 @@ class MediaRepositoryImpl(
         mediaDao.deleteById(id)
         return State.Success(Unit)
     }
+
+    override fun getById(id: Long): State<Media> {
+        TODO("Not yet implemented")
+    }
 }

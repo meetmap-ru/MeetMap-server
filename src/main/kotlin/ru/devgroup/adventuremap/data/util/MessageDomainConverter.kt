@@ -12,6 +12,7 @@ open class MessageDomainConverter : DomainConverter<MessageEntity, Message> {
 
     override fun Message.asDatabaseEntity(): MessageEntity =
         MessageEntity(
+            id,
             sender,
             replyTo,
             timestamp,
@@ -24,6 +25,7 @@ open class MessageDomainConverter : DomainConverter<MessageEntity, Message> {
 
     override fun MessageEntity.asDomain(): Message =
         Message(
+            id,
             sender ?: -1,
             replyTo,
             timestamp ?: -1,

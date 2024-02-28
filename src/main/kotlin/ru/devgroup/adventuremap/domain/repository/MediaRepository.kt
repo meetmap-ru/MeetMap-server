@@ -11,4 +11,6 @@ interface MediaRepository {
     fun upload(id: Long): State<Resource>
 
     fun delete(id: Long): State<Unit>
+
+    fun getById(id: Long): State<Media>
 }
