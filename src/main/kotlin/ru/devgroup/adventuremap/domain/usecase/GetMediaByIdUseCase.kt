@@ -7,5 +7,5 @@ import ru.devgroup.adventuremap.domain.repository.MediaRepository
 class GetMediaByIdUseCase(
     private val mediaRepository: MediaRepository,
 ) {
-    operator fun invoke(id: Long) = mediaRepository.getById(id)
+    operator fun invoke(id: Long) = mediaRepository.upload(id)
 }

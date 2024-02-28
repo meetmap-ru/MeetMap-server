@@ -1,4 +1,4 @@
-package ru.devgroup.adventuremap.presentation.api.event
+package ru.devgroup.adventuremap.presentation.api
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -10,10 +10,7 @@ import ru.devgroup.adventuremap.domain.exceptions.ServerError
 import ru.devgroup.adventuremap.domain.model.event.Event
 import ru.devgroup.adventuremap.domain.repository.EventRepository
 import ru.devgroup.adventuremap.domain.repository.UserRepository
-import ru.devgroup.adventuremap.domain.request.event.ChangeEventItemIdRequest
-import ru.devgroup.adventuremap.domain.request.event.CreateEventRequest
-import ru.devgroup.adventuremap.domain.request.event.DeleteEventRequest
-import ru.devgroup.adventuremap.domain.request.event.GetEventRequest
+import ru.devgroup.adventuremap.domain.request.event.*
 import ru.devgroup.adventuremap.domain.util.TokenHelper
 
 @RestController
@@ -36,13 +33,15 @@ class EventController(
         }
     }
 
-    @GetMapping("/get")
-    fun getEvent(
-        @RequestBody searchParams: GetEventRequest,
+    @GetMapping("/get/by-id")
+    fun getEventById(
+        @RequestParam id: Long,
+    ): ResponseEntity<Any> = eventRepository.getEventById(id).asResponse()
+
+    @GetMapping("/get/by-filter")
+    fun getEventById(
+        @RequestBody searchParams: GetFilteredEventRequest,
     ): ResponseEntity<Any> {
-        if (searchParams.id != null) {
-            return eventRepository.getEventById(searchParams.id).asResponse()
-        }
         return eventRepository.getEventByWordFiltered(
             word = searchParams.keyWord ?: "",
             category = searchParams.categories,

@@ -7,11 +7,12 @@ interface MessageRepository {
     fun createMessage(message: Message): State<Message>
 
     fun deleteMessage(
-        messageId: Long,
         userId: Long,
+        vararg messageId: Long,
     ): State<Unit>
 
     fun editMessage(
+        userId: Long,
         messageId: Long,
         media: List<Long>,
         replyTo: Long?,
@@ -22,4 +23,16 @@ interface MessageRepository {
         messageId: Long,
         userId: Long,
     ): State<Unit>
+
+    fun getMessageById(
+        userId: Long,
+        vararg ids: Long,
+    ): State<List<Message>>
+
+    fun getMessageByEvent(
+        userId: Long,
+        limit: Int,
+        page: Int,
+        eventId: Long,
+    ): State<List<Message>>
 }

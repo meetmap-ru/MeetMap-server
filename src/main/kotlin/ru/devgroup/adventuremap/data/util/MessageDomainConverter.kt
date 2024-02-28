@@ -24,13 +24,13 @@ open class MessageDomainConverter : DomainConverter<MessageEntity, Message> {
 
     override fun MessageEntity.asDomain(): Message =
         Message(
-            sender,
+            sender ?: -1,
             replyTo,
-            timestamp,
-            text,
-            media.mapNotNull { getMediaByIdUseCase(it).data },
-            watchedBy,
-            eventId,
-            edited,
+            timestamp ?: -1,
+            text ?: "empty message",
+            media?.mapNotNull { getMediaByIdUseCase(it).data } ?: emptyList(),
+            watchedBy ?: emptyList(),
+            eventId ?: -1,
+            edited ?: false,
         )
 }

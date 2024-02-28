@@ -8,8 +8,8 @@ import ru.devgroup.adventuremap.data.model.DatabaseEntity
 data class MediaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    val id: Long = 0
     val name: String,
-    val link: String,
     val type: String,
+    val data: ByteArray,
 ) : DatabaseEntity

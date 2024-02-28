@@ -6,22 +6,19 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.stereotype.Component
-import ru.devgroup.adventuremap.core.jwt.AuthTokenFilter
 import ru.devgroup.adventuremap.core.jwt.AuthEntryPoint
-
+import ru.devgroup.adventuremap.core.jwt.AuthTokenFilter
 
 @EnableWebSecurity
 @Configuration
 @Component
 class WebSecurityConfig {
-
     @Bean
     fun provideAuthEntryPoint(): AuthenticationEntryPoint = AuthEntryPoint()
 
@@ -50,19 +47,18 @@ class WebSecurityConfig {
             .authorizeHttpRequests {
                 it.requestMatchers(
                     "api/user/post/sign-up",
-                    "api/user/get/sign-in"
+                    "api/user/get/sign-in",
+                    "api/media/get/by-id",
+                    "api/media/post/create",
                 ).permitAll()
                 it.anyRequest().authenticated()
-
             }
             .exceptionHandling { exception ->
                 exception.authenticationEntryPoint(
-                    provideAuthEntryPoint()
+                    provideAuthEntryPoint(),
                 )
             }
             .addFilterAfter(provideAuthTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
-
-
 }

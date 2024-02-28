@@ -4,7 +4,7 @@ import ru.devgroup.adventuremap.core.util.State
 import kotlin.math.min
 
 /**
- * PaginationController управляет количеством прислываемых данных
+ * PaginationController управляет количеством присылаемых данных
  * Содержит функцию page(limit: Int, offset: Int)
  * limit - максимальное кол-во элементов
  * offset - смещение от начала, равное индексу первого элемента, который будет включен в ответ

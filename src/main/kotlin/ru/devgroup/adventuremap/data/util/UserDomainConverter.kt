@@ -7,6 +7,7 @@ import ru.devgroup.adventuremap.domain.util.DomainConverter
 open class UserDomainConverter : DomainConverter<UserEntity, User> {
     override fun User.asDatabaseEntity(): UserEntity =
         UserEntity(
+            id,
             name,
             lastName,
             nickname,

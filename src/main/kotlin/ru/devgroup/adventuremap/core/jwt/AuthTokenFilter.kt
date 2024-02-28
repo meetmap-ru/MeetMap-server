@@ -1,6 +1,5 @@
 package ru.devgroup.adventuremap.core.jwt
 
-
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
@@ -22,7 +21,6 @@ class AuthTokenFilter : OncePerRequestFilter() {
     @Autowired
     private lateinit var userRepository: UserRepository
 
-
     @Autowired
     private lateinit var jwtHelper: JwtHelper
 
@@ -30,18 +28,21 @@ class AuthTokenFilter : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         try {
             val token = parseJwt(request)
             if (jwtHelper.isTokenValid(token)) {
                 val username: String = jwtHelper.getClaims(token)?.subject ?: throw Exception("subject is null")
-                when(val state = userRepository.getByUsername(username)) {
+                when (val state = userRepository.getByUsername(username)) {
                     is State.Success -> {
                         val user = state.data
-                        val authentication = UsernamePasswordAuthenticationToken(
-                            user, null, user.authorities
-                        )
+                        val authentication =
+                            UsernamePasswordAuthenticationToken(
+                                user,
+                                null,
+                                user.authorities,
+                            )
                         authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
                         SecurityContextHolder.getContext().authentication = authentication
                     }
@@ -56,9 +57,12 @@ class AuthTokenFilter : OncePerRequestFilter() {
         filterChain.doFilter(request, response)
     }
 
-    private fun parseJwt(request: HttpServletRequest): String = request
-        .getHeader("Authorization")
-        .split("Bearer ")[1]
+    private fun parseJwt(request: HttpServletRequest): String =
+        runCatching {
+            request
+                .getHeader("Authorization")
+                .split("Bearer ")[1]
+        }.getOrDefault("")
 
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(AuthTokenFilter::class.java)

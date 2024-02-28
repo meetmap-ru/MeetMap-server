@@ -155,7 +155,9 @@ class EventRepositoryImpl(
         action: Permission,
     ): Boolean {
         if (userId == owner) return true
-        if (userId in organizers && action == Permission.OnlyOrganizers) return true
+        if (userId in organizers && action != Permission.OnlyOwner) return true
+        if (userId in members && action == Permission.OnlyMembers) return true
+        if (action == Permission.AllUsers) return true
         return false
     }
 }

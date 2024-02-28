@@ -9,15 +9,15 @@ open class MediaDomainConverter : DomainConverter<MediaEntity, Media> {
         MediaEntity(
             id,
             name,
-            link,
             type,
+            data,
         )
 
     override fun MediaEntity.asDomain(): Media =
         Media(
             id,
             name,
-            link,
             type,
+            data,
         )
 }

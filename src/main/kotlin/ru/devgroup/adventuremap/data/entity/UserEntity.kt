@@ -7,6 +7,9 @@ import ru.devgroup.adventuremap.domain.model.user.Role
 @Entity
 @Table
 data class UserEntity(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
     val name: String? = null,
     val lastName: String? = null,
     @Column(unique = true)
@@ -28,8 +31,4 @@ data class UserEntity(
     val history: List<Long>? = null,
     val role: MutableList<Role> = mutableListOf(Role.USER),
     val password: String? = null,
-) : DatabaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0
-}
+) : DatabaseEntity

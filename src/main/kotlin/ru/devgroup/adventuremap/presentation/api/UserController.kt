@@ -1,4 +1,4 @@
-package ru.devgroup.adventuremap.presentation.api.user
+package ru.devgroup.adventuremap.presentation.api
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
