@@ -15,7 +15,7 @@ class MediaRepositoryImpl(
     private val mediaDao: MediaDao,
     private val mediaUtils: MediaUtils,
 ) : MediaRepository, MediaDomainConverter() {
-    override fun load(vararg multipart: MultipartFile): State<Media> {
+    override fun load(vararg multipart: MultipartFile): State<List<Media>> {
         TODO("Not yet implemented")
     }
 
