@@ -43,4 +43,8 @@ class MediaRepositoryImpl(
     override fun delete(id: Long): State<Unit> {
         TODO()
     }
+
+    override fun getById(id: Long): State<Media> {
+        TODO("Not yet implemented")
+    }
 }
