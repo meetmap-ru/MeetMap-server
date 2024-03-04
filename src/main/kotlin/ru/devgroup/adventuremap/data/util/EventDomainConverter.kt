@@ -30,7 +30,7 @@ class EventDomainConverter : DomainConverter<EventEntity, Event> {
             media.map { it.id },
             description,
             members,
-            category.map { it.id },
+            category,
             ageLimit,
             date,
             cityId,
@@ -50,11 +50,12 @@ class EventDomainConverter : DomainConverter<EventEntity, Event> {
 
     override fun EventEntity.asDomain(): Event =
         Event(
+            id,
             title,
             media.mapNotNull { getMediaByIdUseCase(it).data },
             description,
             members,
-            category.mapNotNull { getCategoryByIdUseCase(it).data },
+            category,
             ageLimit,
             date,
             cityId,

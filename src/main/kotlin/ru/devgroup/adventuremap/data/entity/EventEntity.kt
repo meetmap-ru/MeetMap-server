@@ -9,7 +9,7 @@ import ru.devgroup.adventuremap.data.model.DatabaseEntity
 import ru.devgroup.adventuremap.domain.model.Permission
 
 @Entity
-@Table
+@Table(name = "event")
 data class EventEntity(
     val title: String,
     val media: List<Long>,

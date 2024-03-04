@@ -160,4 +160,13 @@ class EventRepositoryImpl(
         if (action == Permission.AllUsers) return true
         return false
     }
+
+    override fun isActionPermitted(
+        event: Event,
+        userId: Long,
+        action: Permission,
+    ): Boolean =
+        event
+            .asDatabaseEntity()
+            .isActionPermitted(userId, action)
 }

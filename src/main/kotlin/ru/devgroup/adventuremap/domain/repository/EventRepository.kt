@@ -1,6 +1,7 @@
 package ru.devgroup.adventuremap.domain.repository
 
 import ru.devgroup.adventuremap.core.util.State
+import ru.devgroup.adventuremap.domain.model.Permission
 import ru.devgroup.adventuremap.domain.model.event.Event
 
 interface EventRepository {
@@ -58,4 +59,10 @@ interface EventRepository {
         organizerId: Long,
         ownerId: Long,
     ): State<Unit>
+
+    fun isActionPermitted(
+        event: Event,
+        userId: Long,
+        action: Permission,
+    ): Boolean
 }

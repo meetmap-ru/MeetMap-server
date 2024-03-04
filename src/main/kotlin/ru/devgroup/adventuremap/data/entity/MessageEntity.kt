@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import ru.devgroup.adventuremap.data.model.DatabaseEntity
 
 @Entity
-@Table
+@Table(name = "message")
 data class MessageEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

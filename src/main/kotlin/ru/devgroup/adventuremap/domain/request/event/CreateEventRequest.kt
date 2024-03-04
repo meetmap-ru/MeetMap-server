@@ -1,17 +1,16 @@
 package ru.devgroup.adventuremap.domain.request.event
 
-import ru.devgroup.adventuremap.data.entity.Category
 import ru.devgroup.adventuremap.domain.model.Permission
 
 class CreateEventRequest(
     val title: String,
     val description: String,
-    val category: List<Category>,
+    val category: List<Long>,
     val ageLimit: Int,
-    val date: Pair<Long, Long>,
+    val date: List<Long>,
     val cityId: Long,
     val address: String,
-    val coordinates: Pair<Long, Long>,
+    val coordinates: List<Long>,
     val maxPersons: Int,
     val price: Float,
     val mediaVisibility: Permission = Permission.AllUsers,

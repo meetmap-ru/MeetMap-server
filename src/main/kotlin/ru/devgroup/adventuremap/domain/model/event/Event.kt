@@ -1,16 +1,16 @@
 package ru.devgroup.adventuremap.domain.model.event
 
-import ru.devgroup.adventuremap.data.entity.Category
 import ru.devgroup.adventuremap.domain.model.Domain
 import ru.devgroup.adventuremap.domain.model.Permission
 import ru.devgroup.adventuremap.domain.model.media.Media
 
 data class Event(
+    val id: Long = 0,
     val title: String,
     val media: List<Media>,
     val description: String,
     val members: List<Long>,
-    val category: List<Category>,
+    val category: List<Long>,
     val ageLimit: Int,
     val date: Pair<Long, Long>,
     val cityId: Long,
@@ -27,15 +27,13 @@ data class Event(
     val membersVisibility: Permission = Permission.OnlyMembers,
     val memberChangePermission: Permission = Permission.OnlyOwner,
 ) : Domain {
-    val id: Long = 0
-
     companion object {
         fun new(
             title: String,
             media: List<Media> = listOf(),
             description: String = "",
             members: List<Long> = listOf(),
-            category: List<Category> = listOf(),
+            category: List<Long> = listOf(),
             ageLimit: Int,
             date: Pair<Long, Long>,
             cityId: Long,
@@ -52,6 +50,7 @@ data class Event(
             membersVisibility: Permission = Permission.OnlyMembers,
             memberChangePermission: Permission = Permission.OnlyOwner,
         ) = Event(
+            0,
             title,
             media,
             description,

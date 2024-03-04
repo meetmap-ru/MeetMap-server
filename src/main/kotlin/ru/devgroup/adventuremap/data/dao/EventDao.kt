@@ -12,7 +12,7 @@ interface EventDao : JpaRepository<EventEntity, Long> {
 
     fun findByCityId(city: Long): List<EventEntity>
 
-    @Query("select user from UserEntity user where user.username = ?1 or user.phoneNumber = ?1 or user.email = ?1")
+    @Query("select user from UserEntity user where user.nickname = ?1 or user.phoneNumber = ?1 or user.email = ?1")
     fun findByLogin(login: String): UserEntity?
 
     @Query(
