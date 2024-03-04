@@ -1,0 +1,32 @@
+package ru.devgroup.adventuremap.core.util
+
+val fileContentType =
+    mapOf(
+        "text/html" to "html",
+        "text/css" to "css",
+        "text/xml" to "xml",
+        "image/gif" to "gif",
+        "image/jpeg" to "jpg",
+        "text/mathml" to "mml",
+        "text/plain" to "txt",
+        "text/vnd.sun.j2me.app-descriptor" to "jad",
+        "text/vnd.wap.wml" to "wml",
+        "text/x-component" to "htc",
+        "image/png" to "png",
+        "image/tiff" to "tif",
+        "image/vnd.wap.wbmp" to "wbmp",
+        "image/x-icon" to "ico",
+        "image/x-jng" to "jng",
+        "image/x-ms-bmp" to "bmp",
+        "image/svg+xml" to "svg",
+        "image/webp" to "webp",
+        "video/3gpp" to "3gpp",
+        "video/mpeg" to "mpeg",
+        "video/quicktime" to "mov",
+        "video/x-flv" to "flv",
+        "video/x-mng" to "mng",
+        "video/x-ms-asf" to "asx",
+        "video/x-ms-wmv" to "wmv",
+        "video/x-msvideo" to "avi",
+        "video/mp4" to "m4v",
+    )
