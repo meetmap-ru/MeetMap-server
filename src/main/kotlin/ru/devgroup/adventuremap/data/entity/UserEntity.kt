@@ -5,7 +5,7 @@ import ru.devgroup.adventuremap.data.model.DatabaseEntity
 import ru.devgroup.adventuremap.domain.model.user.Role
 
 @Entity
-@Table
+@Table(name = "users")
 data class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ data class UserEntity(
     val name: String? = null,
     val lastName: String? = null,
     @Column(unique = true)
-    val username: String? = null,
+    val nickname: String? = null,
     @Column(unique = true)
     val email: String? = null,
     @Column(unique = true)

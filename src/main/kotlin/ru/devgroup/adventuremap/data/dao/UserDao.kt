@@ -13,11 +13,11 @@ interface UserDao : JpaRepository<UserEntity, Long> {
 
     fun findByEmail(email: String): UserEntity?
 
-    fun findByUsername(username: String): UserEntity?
+    fun findByNickname(nickname: String): UserEntity?
 
     fun findByCity(city: Long): List<UserEntity>
 
-    @Query("select user from UserEntity user where user.username = ?1 or user.phoneNumber = ?1 or user.email = ?1")
+    @Query("select user from UserEntity user where user.nickname = ?1 or user.phoneNumber = ?1 or user.email = ?1")
     fun findByLogin(login: String): UserEntity?
 
     @Query("select user from UserEntity user where user.name like %:part% or user.lastName like %:part%")

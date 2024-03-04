@@ -15,9 +15,12 @@ import javax.crypto.SecretKey
 @Component
 class JwtHelper(
     @Value("\${jwt.secret}") private val jwtSecret: String,
-    @Value("\${jwt.expirationTime}") private val expirationTime: Long
+    @Value("\${jwt.audience}") private val jwtAudience: String,
+    @Value("\${jwt.domain}") private val jwtDomain: String,
+    @Value("\${jwt.accessExp}") private val accessExp: Long,
+    @Value("\${jwt.refreshExp}") private val refreshExp: Long,
+    @Value("\${jwt.realm}") private val jwtRealm: String,
 ) : TokenHelper {
-
     private var jwtSecretKey: Key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret))
 
     override fun isTokenValid(token: String?): Boolean {
@@ -31,23 +34,35 @@ class JwtHelper(
         return false
     }
 
+    override fun isRefreshToken(token: String): Boolean {
+        getClaims(token)?.let {
+            return it["type"] == "refresh"
+        }
+        return false
+    }
+
     override fun createToken(
         userDetails: User,
-        claims: HashMap<String, Any?>
+        claims: HashMap<String, Any?>,
+        isAccessToken: Boolean,
     ): String {
-        val token = Jwts.builder()
-            .claims(
-                claims + hashMapOf(
-                    "id" to userDetails.id,
-                    "role" to userDetails.role,
-                    "regTime" to (userDetails.registrationTimestamp?:0)
+        val token =
+            Jwts.builder()
+                .claims(
+                    claims +
+                        hashMapOf(
+                            "id" to userDetails.id,
+                            "role" to userDetails.role,
+                            "regTime" to (userDetails.registrationTimestamp ?: 0),
+                            "type" to if (isAccessToken) "access" else "refresh",
+                        ),
                 )
-            )
-            .subject(userDetails.username)
-            .issuedAt(Date())
-            .expiration(Date(Date().time + expirationTime))
-            .signWith(jwtSecretKey).compact()
-        return "Bearer $token"
+                .subject(userDetails.username)
+                .issuedAt(Date())
+                .expiration(Date(Date().time + if (isAccessToken) accessExp else refreshExp))
+                .issuer(jwtDomain)
+        token.audience().add(jwtAudience)
+        return token.signWith(jwtSecretKey).compact()
     }
 
     override fun getClaims(token: String?): Claims? {
@@ -60,5 +75,5 @@ class JwtHelper(
         }.getOrNull()
     }
 
-    private fun String.prepareToken(): String = this.split(" ").lastOrNull()?:this
+    private fun String.prepareToken(): String = this.split(" ").lastOrNull() ?: this
 }

@@ -48,8 +48,6 @@ class WebSecurityConfig {
                 it.requestMatchers(
                     "api/user/post/sign-up",
                     "api/user/get/sign-in",
-                    "api/media/get/by-id",
-                    "api/media/post/create",
                 ).permitAll()
                 it.anyRequest().authenticated()
             }

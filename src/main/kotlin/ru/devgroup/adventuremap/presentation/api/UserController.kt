@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.*
 import ru.devgroup.adventuremap.core.config.USER_API
 import ru.devgroup.adventuremap.core.util.State
 import ru.devgroup.adventuremap.domain.exceptions.BaseException
+import ru.devgroup.adventuremap.domain.exceptions.InvalidCredentials
+import ru.devgroup.adventuremap.domain.exceptions.NotFoundException
 import ru.devgroup.adventuremap.domain.exceptions.ServerError
-import ru.devgroup.adventuremap.domain.model.user.User
 import ru.devgroup.adventuremap.domain.repository.UserRepository
 import ru.devgroup.adventuremap.domain.request.user.ResetPasswordRequest
 import ru.devgroup.adventuremap.domain.request.user.SignInRequest
 import ru.devgroup.adventuremap.domain.request.user.SignUpRequest
 import ru.devgroup.adventuremap.domain.response.Response.DataResponse
+import ru.devgroup.adventuremap.domain.response.Token
 import ru.devgroup.adventuremap.domain.util.PaginationController
 import ru.devgroup.adventuremap.domain.util.TokenHelper
 
@@ -45,14 +47,16 @@ class UserController(
     fun signIn(
         @RequestBody signInRequest: SignInRequest,
         result: BindingResult,
-    ): ResponseEntity<Any> =
-        when (val state = userRepository.signIn(signInRequest.username, signInRequest.password)) {
+    ): ResponseEntity<Any> {
+        return when (val state = userRepository.signIn(signInRequest.username, signInRequest.password)) {
             is State.Success -> {
-                val token = tokenHelper.createToken(state.data as User)
-                ResponseEntity.accepted().body(DataResponse(token, message = "authorized"))
+                val token = tokenHelper.createToken(userDetails = state.data)
+                val refreshToken = tokenHelper.createToken(userDetails = state.data, isAccessToken = false)
+                ResponseEntity.accepted().body(DataResponse(Token(token, refreshToken), message = "authorized"))
             }
             else -> state.asResponse()
         }
+    }
 
     @GetMapping("/get/info")
     fun getUserInfo(
@@ -90,5 +94,22 @@ class UserController(
         @RequestParam offset: Int = 0,
     ): ResponseEntity<Any> {
         return userRepository.getByName(name).page(limit, offset).asResponse()
+    }
+
+    @GetMapping("get/token")
+    fun getToken(
+        @RequestHeader header: HttpHeaders,
+    ): ResponseEntity<Any> {
+        val token = header["Authorization"]?.first() ?: ""
+        val userId = (tokenHelper.getClaims(token)?.get("id") as Int).toLong()
+        val user = userRepository.getById(userId, true).data ?: throw NotFoundException()
+
+        if (tokenHelper.isRefreshToken(token)) {
+            val accessToken = tokenHelper.createToken(userDetails = user)
+            val refreshToken = tokenHelper.createToken(userDetails = user, isAccessToken = false)
+            return ResponseEntity.status(200).body(DataResponse(Token(accessToken, refreshToken)))
+        } else {
+            throw InvalidCredentials("refresh token required")
+        }
     }
 }

@@ -32,7 +32,7 @@ open class UserDomainConverter : DomainConverter<UserEntity, User> {
             id,
             name,
             lastName,
-            username,
+            nickname,
             email,
             phoneNumber,
             city,

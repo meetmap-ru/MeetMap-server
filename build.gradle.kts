@@ -25,6 +25,9 @@ dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // websockets
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+
     // security
     implementation("org.springframework.boot:spring-boot-starter-security")
 
@@ -44,7 +47,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
     // Coroutines
-    implementation( "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")

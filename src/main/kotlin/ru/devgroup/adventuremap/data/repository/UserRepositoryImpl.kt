@@ -35,7 +35,7 @@ class UserRepositoryImpl(
         password: String,
     ): State<User> {
         val user = userDao.findByLogin(login) ?: throw NotFoundException()
-        if (user.password != passwordEncoder.encode(password)) throw InvalidCredentials()
+        if (!passwordEncoder.matches(password, user.password)) throw InvalidCredentials()
         return State.Success(user.asDomain())
     }
 
@@ -78,7 +78,7 @@ class UserRepositoryImpl(
     }
 
     override fun getByUsername(username: String): State<User> {
-        val user = userDao.findByUsername(username) ?: throw NotFoundException()
+        val user = userDao.findByNickname(username) ?: throw NotFoundException()
         return State.Success(user.asDomain().commonInfo())
     }
 
